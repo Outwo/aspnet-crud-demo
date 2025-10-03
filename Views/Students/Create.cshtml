@@ -1,25 +1,26 @@
 @model CrudDemo.Models.Student
-
-@{
-    ViewData["Title"] = "Create Student";
-}
+@{ Layout = "_Layout";
+    ViewData["Title"] = "Create Student"; }
 
 <h1>Create Student</h1>
 
 <form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Nama"></label>
+    <div class="mb-3">
+        <label asp-for="Nama" class="form-label"></label>
         <input asp-for="Nama" class="form-control" />
+        <span asp-validation-for="Nama" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="Email"></label>
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label"></label>
         <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="TanggalLahir"></label>
+    <div class="mb-3">
+        <label asp-for="TanggalLahir" class="form-label"></label>
         <input asp-for="TanggalLahir" type="date" class="form-control" />
+        <span asp-validation-for="TanggalLahir" class="text-danger"></span>
     </div>
-    <br />
-    <button type="submit" class="btn btn-success">Create</button>
+    <button type="submit" class="btn btn-success">Save</button>
     <a asp-action="Index" class="btn btn-secondary">Back</a>
 </form>
+

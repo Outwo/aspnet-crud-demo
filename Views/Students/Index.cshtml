@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<CrudDemo.Models.Student>
-
 @{
     ViewData["Title"] = "Students";
+    Layout = "_Layout"; // Gunakan layout header & footer
 }
 
 <h1>Students</h1>
@@ -10,28 +10,32 @@
     <a class="btn btn-primary" asp-action="Create">Create New Student</a>
 </p>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nama</th>
-            <th>Email</th>
-            <th>Tanggal Lahir</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
             <tr>
-                <td>@item.Nama</td>
-                <td>@item.Email</td>
-                <td>@item.TanggalLahir.ToShortDateString()</td>
-                <td>
-                    <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Tanggal Lahir</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Nama</td>
+                    <td>@item.Email</td>
+                    <td>@item.TanggalLahir.ToShortDateString()</td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
