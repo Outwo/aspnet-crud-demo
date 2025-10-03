@@ -9,6 +9,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("TestDb"));
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(1); // session 60 menit
+    options.Cookie.HttpOnly = true; // aman dari script
+    options.Cookie.IsEssential = true; // selalu dikirim
+});
+
 
 var app = builder.Build();
 
@@ -25,6 +34,7 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseSession();
 app.UseAuthorization();
 
 // Default route langsung ke Students
@@ -33,3 +43,15 @@ app.MapControllerRoute(
     pattern: "{controller=Students}/{action=Index}/{id?}");
 
 app.Run();
+
+// Notifikasi otomatis saat session timeout
+app.Use(async (context, next) =>
+{
+    if (string.IsNullOrEmpty(context.Session.GetString("username")) 
+        && context.Request.Path.StartsWithSegments("/Students"))
+    {
+        context.Response.Redirect("/Account/Login?message=timeout");
+        return;
+    }
+    await next();
+});

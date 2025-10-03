@@ -1,4 +1,4 @@
-using CrudDemo.Data;
+using CrudDemo.Data; 
 using CrudDemo.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +14,13 @@ namespace CrudDemo.Controllers
             _context = context;
         }
 
+        // Helper untuk cek login
+        private bool IsLoggedIn() => !string.IsNullOrEmpty(HttpContext.Session.GetString("username"));
+
         // GET: /Students
         public IActionResult Index()
         {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
             var students = _context.Students.ToList();
             return View(students);
         }
@@ -24,19 +28,27 @@ namespace CrudDemo.Controllers
         // GET: /Students/Details/5
         public IActionResult Details(int id)
         {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
+
             var student = _context.Students.FirstOrDefault(s => s.Id == id);
             if (student == null) return NotFound();
             return View(student);
         }
 
         // GET: /Students/Create
-        public IActionResult Create() => View();
+        public IActionResult Create()
+        {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
+            return View();
+        }
 
         // POST: /Students/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Student student)
         {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
+
             if (ModelState.IsValid)
             {
                 _context.Students.Add(student);
@@ -49,6 +61,8 @@ namespace CrudDemo.Controllers
         // GET: /Students/Edit/5
         public IActionResult Edit(int id)
         {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
+
             var student = _context.Students.FirstOrDefault(s => s.Id == id);
             if (student == null) return NotFound();
             return View(student);
@@ -59,6 +73,8 @@ namespace CrudDemo.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Student student)
         {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
+
             if (id != student.Id) return BadRequest();
 
             if (ModelState.IsValid)
@@ -73,6 +89,8 @@ namespace CrudDemo.Controllers
         // GET: /Students/Delete/5
         public IActionResult Delete(int id)
         {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
+
             var student = _context.Students.FirstOrDefault(s => s.Id == id);
             if (student == null) return NotFound();
             return View(student);
@@ -83,6 +101,8 @@ namespace CrudDemo.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
+
             var student = _context.Students.FirstOrDefault(s => s.Id == id);
             if (student != null)
             {
