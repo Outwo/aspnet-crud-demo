@@ -1,27 +1,35 @@
+using CrudDemo.Data;
+using CrudDemo.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Tambahkan DbContext pakai In-Memory Database
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseInMemoryDatabase("TestDb"));
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Tambah data awal (opsional)
+using (var scope = app.Services.CreateScope())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Students.Add(new Student { Nama = "Bisma", Email = "bisma@email.com", TanggalLahir = DateTime.Parse("2000-01-01") });
+    context.Students.Add(new Student { Nama = "Raynaldi", Email = "raynaldi@email.com", TanggalLahir = DateTime.Parse("2001-02-02") });
+    context.SaveChanges();
 }
 
+// Middleware
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
 
+// Default route langsung ke Students
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Students}/{action=Index}/{id?}");
 
 app.Run();
